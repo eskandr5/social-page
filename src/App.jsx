@@ -7,7 +7,6 @@ import Profile from './components/pages/Profile';
 import Notifications from './components/pages/Notifications';
 import { AiOutlineHome, AiOutlineSearch, AiOutlinePlusSquare, AiOutlineBell } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-
 // مكون الحماية
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -36,8 +35,7 @@ function App() {
   const token = localStorage.getItem('token');
 
   return (
-    <Router>
-      {/* 1. النافبار العلوي */}
+    <Router basename="/social-page">      {/* 1. النافبار العلوي */}
       {token && <Navbar />}
 
       {/* 2. محتوى الصفحة مع إضافة padding سفلي في الموبايل لكي لا يغطي الشريط المحتوى */}
