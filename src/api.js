@@ -1,0 +1,1 @@
+export const API_URL = "https://my-social-api-ytg6.onrender.com";
