@@ -5,10 +5,13 @@ import { API_URL } from '../../api';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch(`${API_URL}/api/auth/local`, {
                 method: 'POST',
@@ -33,6 +36,11 @@ const Login = () => {
         } catch (error) {
             console.error('Error:', error);
         }
+        finally {
+
+            setLoading(false);
+
+        }
     };
 
     return (
@@ -56,8 +64,12 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition-all cursor-pointer">
-                            Login
+                        <button
+                            disabled={loading}
+
+                            className={`w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 active:scale-95 transition-all cursor-pointer 
+                                ${loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 active:scale-95'}`}>
+                            {loading ? "Login..." : "Login"}
                         </button>
                     </div>
                 </form>

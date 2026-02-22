@@ -3,6 +3,7 @@ import Sidebar from '../Feed/Sidebar';
 import Rightbar from '../Feed/Rightbar';
 import Post from '../Feed/Post';
 import { API_URL } from '../../api';
+import ProfileSkeleton from '../skeleton/ProfileSkeleton';
 import { AiOutlineCalendar, AiOutlineCamera } from 'react-icons/ai';
 
 const Profile = () => {
@@ -139,7 +140,14 @@ const Profile = () => {
     if (!userData) {
         return <div className="flex justify-center items-center h-screen">Loading Profile...</div>;
     }
+    if (loading) {
+        return (
+            <div className="space-y-4 p-4">
+                <ProfileSkeleton />
 
+            </div>
+        );
+    }
     return (
         <div className="max-w-7xl mx-auto flex justify-center gap-6 px-4">
             <div className="hidden md:block w-64">

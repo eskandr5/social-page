@@ -23,7 +23,7 @@ const Navbar = () => {
                     {/* Left Side: Menu (Mobile) & Logo */}
                     <div className="flex items-center gap-3">
                         {/* زر فتح القائمة للموبايل فقط */}
-                        <button 
+                        <button
                             onClick={() => setIsMenuOpen(true)}
                             className="md:hidden text-gray-700 p-1 hover:bg-gray-100 rounded-lg transition"
                         >
@@ -53,7 +53,7 @@ const Navbar = () => {
                             </div>
                         </Link>
 
-                        <div className="h-6 w-[1px] bg-gray-200 mx-1"></div>
+                        <div className="h-6 w-1px bg-gray-200 mx-1"></div>
 
                         <button
                             onClick={handleLogout}
@@ -68,32 +68,30 @@ const Navbar = () => {
 
             {/* --- Mobile Drawer (القائمة الجانبية للموبايل) --- */}
             {/* الخلفية المظلمة */}
-            <div 
-                className={`fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300 md:hidden ${
-                    isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                }`}
+            <div
+                className={`fixed inset-0 bg-black/50 z-60 transition-opacity duration-300 md:hidden ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                    }`}
                 onClick={() => setIsMenuOpen(false)}
             />
 
             {/* القائمة نفسها */}
-            <div 
-                className={`fixed top-0 left-0 h-full w-[280px] bg-gray-50 z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden overflow-y-auto ${
-                    isMenuOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
+            <div
+                className={`fixed top-0 left-0 h-full w-280px bg-gray-50 z-70 shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden overflow-y-auto ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
             >
                 <div className="p-4 bg-white border-b flex justify-between items-center sticky top-0 z-10">
                     <span className="font-bold text-gray-800">Suggestions</span>
-                    <button 
+                    <button
                         onClick={() => setIsMenuOpen(false)}
                         className="p-2 hover:bg-gray-100 rounded-full text-gray-600"
                     >
                         <AiOutlineClose size={20} />
                     </button>
                 </div>
-                
+
                 <div className="p-2">
                     {/* استدعاء الرايت بار هنا ليعمل داخل الموبايل */}
-                    <div className="!block"> {/* نلغي الـ hidden الخاص بالـ Rightbar هنا */}
+                    <div className="block!"> {/* نلغي الـ hidden الخاص بالـ Rightbar هنا */}
                         <Rightbar />
                     </div>
                 </div>

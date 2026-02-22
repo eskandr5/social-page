@@ -3,6 +3,10 @@ import Post from '../Feed/Post';
 import Share from '../Feed/Share';
 import Rightbar from '../Feed/Rightbar';
 import Sidebar from '../Feed/Sidebar';
+import SkeletonCard from '../skeleton/ProfileSkeleton';
+import PostSkeleton from '../skeleton/PostSkeleton';
+import ShareSkeleton from '../skeleton/ShareSkeleton';
+import SidebarSkeleton from '../skeleton/SidebarSkeleton';
 import { API_URL } from '../../api';
 
 const Feed = () => {
@@ -26,7 +30,21 @@ const Feed = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
+  if (loading) {
+    return (
+      <div className="flex justify-between max-w-7xl mx-auto">
+        <SidebarSkeleton /> {/* Sidebar جهة اليسار */}
 
+        <div className="flex-1 max-w-2xl px-4">
+          <ShareSkeleton /> {/* صندوق المشاركة */}
+          <PostSkeleton />  {/* منشور 1 */}
+          <PostSkeleton />  {/* منشور 2 */}
+        </div>
+
+        <SidebarSkeleton /> {/* Rightbar جهة اليمين */}
+      </div>
+    );
+  }
   return (
     <div className="max-w-7xl mx-auto flex justify-center gap-6 px-4">
       <div className="hidden md:block w-20 lg:w-64">
