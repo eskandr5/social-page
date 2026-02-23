@@ -30,31 +30,47 @@ const Share = ({ onPostCreated }) => {
     const handleShare = async () => {
         const user = getUserData();
         if (!content.trim() && !image) return;
-        if (!user?.id) {
-            alert("Please login again");
-            return;
-        }
 
         setLoading(true);
         const token = localStorage.getItem('token');
-        const formData = new FormData();
-
-        const postData = {
-            content: content,
-            user: user.id,
-            publishedAt: new Date().toISOString()
-        };
-
-        formData.append('data', JSON.stringify(postData));
-        if (image) {
-            formData.append('files.image', image);
-        }
 
         try {
+            let uploadedImageId = null;
+
+            // الخطوة الأولى: رفع الصورة إذا وجدت
+            if (image) {
+                const imageFormData = new FormData();
+                imageFormData.append('files', image);
+
+                const uploadRes = await fetch(`${API_URL}/api/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: imageFormData
+                });
+
+                if (uploadRes.ok) {
+                    const uploadResult = await uploadRes.json();
+                    uploadedImageId = uploadResult[0].id; // حفظ معرف الصورة المرفوعة
+                }
+            }
+
+            // الخطوة الثانية: إنشاء المنشور وربطه بالصورة
+            const postData = {
+                data: {
+                    content: content,
+                    user: user.id,
+                    image: uploadedImageId, // ربط الـ ID مباشرة بالحقل
+                    publishedAt: new Date().toISOString()
+                }
+            };
+
             const response = await fetch(`${API_URL}/api/posts`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(postData),
             });
 
             if (response.ok) {
@@ -63,8 +79,10 @@ const Share = ({ onPostCreated }) => {
                 setPreview(null);
                 if (onPostCreated) onPostCreated();
             }
+
         } catch (error) {
-            console.error("Post Creation Error:", error);
+            console.error("Error:", error);
+            alert("حدث خطأ أثناء النشر");
         } finally {
             setLoading(false);
         }

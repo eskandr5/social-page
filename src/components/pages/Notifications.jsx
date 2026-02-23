@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Sidebar from '../Feed/Sidebar';
-import Rightbar from '../Feed/Rightbar';
+import Sidebar from '../layout/Sidebar';
+import Rightbar from '../layout/Rightbar';
 import { API_URL } from '../../api';
 
 const Notifications = () => {
