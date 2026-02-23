@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AiOutlineHeart, AiOutlineComment, AiOutlineSend, AiFillHeart, AiOutlineDelete } from "react-icons/ai";
 import { API_URL } from '../../api';
-import Follow from '../Follow/Follow';
+import Follow from '../follow/Follow';
 
 const Post = ({ post, onUpdate }) => {
   const [commentText, setCommentText] = useState("");
@@ -9,6 +9,7 @@ const Post = ({ post, onUpdate }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [isLikedByMe, setIsLikedByMe] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   const authorName = post.user?.username || "Anonymous";
@@ -147,6 +148,24 @@ const Post = ({ post, onUpdate }) => {
       console.error("Delete Error:", error);
     }
   };
+  // هذه الوظيفة تنفذ الحذف الحقيقي عند الضغط على "تأكيد" داخل المودال
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/posts/${post.documentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setShowDeleteModal(false); // أغلق النافذة
+        onUpdate(); // تحديث القائمة
+      }
+    } catch (error) {
+      console.error("Delete Error:", error);
+    }
+  };
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
       {/* Header */}
@@ -177,7 +196,7 @@ const Post = ({ post, onUpdate }) => {
         {/* زر الحذف */}
         {(post.user?.documentId === user.documentId || post.user?.id === user.id) && (
           <button
-            onClick={handleDelete}
+            onClick={() => setShowDeleteModal(true)}
             className="text-gray-400 hover:text-red-500 transition-colors p-2"
             title="Delete Post"
           >
@@ -261,7 +280,50 @@ const Post = ({ post, onUpdate }) => {
           </form>
         </div>
       </div>
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* الخلفية المظلمة مع تأثير الـ Blur */}
+          <div
+            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowDeleteModal(false)}
+          ></div>
+
+          {/* جسم النافذة */}
+          <div className="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 transform transition-all scale-100">
+            <div className="flex flex-col items-center text-center">
+              {/* أيقونة تحذير دائرية */}
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+
+              <h3 className="text-xl font-black text-gray-900 mb-2">Delete Post?</h3>
+              <p className="text-gray-500 text-sm mb-8">
+                This action cannot be undone. This will permanently delete your post and all its data.
+              </p>
+
+              {/* الأزرار */}
+              <div className="flex w-full gap-3">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-shadow shadow-lg shadow-red-200"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 

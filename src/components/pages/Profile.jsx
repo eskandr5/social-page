@@ -10,7 +10,8 @@ const Profile = () => {
     const [myPosts, setMyPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-
+    const [showFollowList, setShowFollowList] = useState(false);
+    const [listType, setListType] = useState(""); // "followers" or "following"
     // 1. أمان إضافي عند قراءة البيانات لأول مرة
     const [userData, setUserData] = useState(() => {
         const saved = localStorage.getItem('user');
@@ -219,19 +220,67 @@ const Profile = () => {
                                 <span className="font-bold text-gray-800">{myPosts?.length || 0}</span>
                                 <span className="text-gray-500 text-sm">Posts</span>
                             </div>
-                            <div className="flex gap-1 items-center">
-                                {/* أحياناً Strapi يعيد العلاقات كمصفوفة مباشرة وأحياناً ككائن يحتوي على data */}
+                            <div
+                                className="flex gap-1 items-center cursor-pointer hover:underline"
+                                onClick={() => { setListType("following"); setShowFollowList(true); }}
+                            >
                                 <span className="font-bold text-gray-800">
                                     {Array.isArray(userData.following) ? userData.following.length : 0}
                                 </span>
                                 <span className="text-gray-500 text-sm">Following</span>
                             </div>
-                            <div className="flex gap-1 items-center">
+
+                            <div
+                                className="flex gap-1 items-center cursor-pointer hover:underline"
+                                onClick={() => { setListType("followers"); setShowFollowList(true); }}
+                            >
                                 <span className="font-bold text-gray-800">
                                     {Array.isArray(userData.followers) ? userData.followers.length : 0}
                                 </span>
                                 <span className="text-gray-500 text-sm">Followers</span>
                             </div>
+                            {showFollowList && (
+                                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                                    <div className="bg-white rounded-3xl w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col shadow-2xl">
+                                        {/* Header */}
+                                        <div className="p-4 border-b flex justify-between items-center">
+                                            <h3 className="font-black text-xl capitalize">{listType}</h3>
+                                            <button
+                                                onClick={() => setShowFollowList(false)}
+                                                className="p-2 hover:bg-gray-100 rounded-full transition"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+
+                                        {/* List Content */}
+                                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                            {userData[listType]?.length > 0 ? (
+                                                userData[listType].map((person) => (
+                                                    <div key={person.id} className="flex items-center justify-between group">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                                                {person.username?.[0].toUpperCase()}
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition cursor-pointer">
+                                                                    {person.username}
+                                                                </p>
+                                                                <p className="text-xs text-gray-500">@{person.username?.toLowerCase()}</p>
+                                                            </div>
+                                                        </div>
+                                                        <button className="text-sm font-bold text-blue-600 hover:bg-blue-50 px-4 py-1.5 rounded-full border border-blue-600 transition">
+                                                            View Profile
+                                                        </button>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-center py-10 text-gray-400 italic">No {listType} yet.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

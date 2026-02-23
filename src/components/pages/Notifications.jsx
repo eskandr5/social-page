@@ -7,11 +7,12 @@ const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('token');
+    // استخدام Optional Chaining لضمان عدم الخطأ عند عدم وجود مستخدم
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            if (!user?.id) return;
+            if (!user?.id || !token) return;
             try {
                 const res = await fetch(
                     `${API_URL}/api/notifications?filters[receiver][id][$eq]=${user.id}&sort=createdAt:desc&populate=sender`,
@@ -20,13 +21,13 @@ const Notifications = () => {
                 const result = await res.json();
                 setNotifications(result.data || []);
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Error fetching notifications:", error);
             } finally {
                 setLoading(false);
             }
         };
         fetchNotifications();
-    }, []);
+    }, [user.id]); // يكفي الاعتماد على id المستخدم
 
     return (
         <div className="max-w-7xl mx-auto flex justify-center gap-6 px-4">
@@ -39,27 +40,39 @@ const Notifications = () => {
 
                 <div className="space-y-4">
                     {loading ? (
-                        <p className="text-center py-10">Loading notifications...</p>
+                        // يمكنك هنا وضع الـ Skeleton الذي تعلمناه سابقاً
+                        <p className="text-center py-10 text-gray-400">Loading...</p>
                     ) : notifications.length > 0 ? (
-                        notifications.map((notif) => (
-                            <div key={notif.id} className={`flex items-center gap-4 p-4 rounded-2xl border transition ${notif.attributes.isRead ? 'bg-white' : 'bg-blue-50 border-blue-100'}`}>
-                                <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shrink-0">
-                                    {notif.attributes.sender.data.attributes.username[0].toUpperCase()}
+                        notifications.map((notif) => {
+                            const attr = notif.attributes || notif;
+                            // هذا السطر يضمن الوصول لاسم المستخدم مهما كانت نسخة Strapi
+                            const sender = attr.sender?.data?.attributes || attr.sender;
+                            const isRead = attr.isRead;
+
+                            return (
+                                <div key={notif.id}
+                                    className={`flex items-center gap-4 p-4 rounded-2xl border transition duration-300 hover:shadow-md ${isRead ? 'bg-white border-gray-100' : 'bg-blue-50 border-blue-100'
+                                        }`}>
+                                    <div className="w-12 h-12 rounded-full bg-linear-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shrink-0 shadow-sm">
+                                        {sender?.username ? sender.username[0].toUpperCase() : "?"}
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm text-gray-800">
+                                            <span className="font-bold text-gray-900">{sender?.username || "Someone"}</span>
+                                            {" "}{attr.text || "interacted with you"}
+                                        </p>
+                                        <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                                            {attr.createdAt && new Date(attr.createdAt).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' })}
+                                        </p>
+                                    </div>
+                                    {!isRead && <div className="w-2.5 h-2.5 bg-blue-600 rounded-full shadow-[0_0_8px_rgba(37,99,235,0.5)]"></div>}
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm">
-                                        <span className="font-bold">{notif.attributes.sender.data.attributes.username}</span>
-                                        {" "}{notif.attributes.text}
-                                    </p>
-                                    <p className="text-[10px] text-gray-400 mt-1">
-                                        {new Date(notif.attributes.createdAt).toLocaleString()}
-                                    </p>
-                                </div>
-                                {!notif.attributes.isRead && <div className="w-2 h-2 bg-blue-600 rounded-full"></div>}
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
-                        <div className="text-center py-20 text-gray-500 italic">No notifications yet.</div>
+                        <div className="text-center py-20 text-gray-500 bg-white rounded-3xl border border-dashed italic">
+                            No notifications yet.
+                        </div>
                     )}
                 </div>
             </div>

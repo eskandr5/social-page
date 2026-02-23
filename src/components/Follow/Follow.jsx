@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { API_URL } from '../../api';
+import { AiOutlinePlus, AiOutlineCheck } from 'react-icons/ai'; // استيراد الأيقونات
 
-const Follow = ({ targetUserId, targetUserName }) => {
+const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // نقل جلب البيانات إلى داخل الدالة لضمان قراءة أحدث قيمة دائماً
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -24,17 +24,18 @@ const Follow = ({ targetUserId, targetUserName }) => {
       }
     };
 
-    // جلب المستخدم الحالي من localStorage داخل الـ useEffect لضمان الدقة
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
     if (storedUser?.id && storedUser.id !== targetUserId) {
       checkFollowStatus();
     }
   }, [targetUserId, token]);
 
-  const toggleFollow = async () => {
+  const toggleFollow = async (e) => {
+    // نستخدم e.stopPropagation لمنع الضغط على العناصر الأب (مثل الـ div في الـ Rightbar)
+    e.stopPropagation();
+
     if (loading) return;
     
-    // قراءة البيانات في لحظة الضغط على الزر لتجنب الـ undefined
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = storedUser?.id;
 
@@ -46,14 +47,12 @@ const Follow = ({ targetUserId, targetUserName }) => {
     setLoading(true);
 
     try {
-      // 1. جلب القائمة الحالية
       const res = await fetch(`${API_URL}/api/users/me?populate=following`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       let currentFollowingIds = data.following?.map(u => u.id) || [];
 
-      // 2. تحديث القائمة
       let updatedFollowing;
       if (isFollowing) {
         updatedFollowing = currentFollowingIds.filter(id => id !== targetUserId);
@@ -61,7 +60,6 @@ const Follow = ({ targetUserId, targetUserName }) => {
         updatedFollowing = [...currentFollowingIds, targetUserId];
       }
 
-      // 3. إرسال التحديث (استخدام userId المحمي)
       const updateRes = await fetch(`${API_URL}/api/users/${userId}`, {
         method: 'PUT',
         headers: {
@@ -73,8 +71,6 @@ const Follow = ({ targetUserId, targetUserName }) => {
 
       if (updateRes.ok) {
         setIsFollowing(!isFollowing);
-      } else {
-        console.error("Server refused update");
       }
     } catch (error) {
       console.error("Follow action failed:", error);
@@ -83,10 +79,33 @@ const Follow = ({ targetUserId, targetUserName }) => {
     }
   };
 
-  // حماية إضافية قبل الرسم (Render)
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   if (!storedUser?.id || storedUser.id === targetUserId) return null;
 
+  // --- النمط الأول: شكل الأيقونة للـ Rightbar ---
+  if (variant === "icon") {
+    return (
+      <button
+        onClick={toggleFollow}
+        disabled={loading}
+        className={`p-1.5 rounded-full transition-all shadow-md shrink-0 active:scale-90 ${
+          isFollowing 
+          ? 'bg-gray-100 text-gray-400 shadow-none' 
+          : 'bg-blue-600 hover:bg-blue-700 text-white'
+        }`}
+      >
+        {loading ? (
+           <span className="text-[10px]">...</span>
+        ) : isFollowing ? (
+          <AiOutlineCheck size={16} />
+        ) : (
+          <AiOutlinePlus size={16} />
+        )}
+      </button>
+    );
+  }
+
+  // --- النمط الثاني: الشكل الافتراضي (نص) للبروفايل ---
   return (
     <button
       onClick={toggleFollow}

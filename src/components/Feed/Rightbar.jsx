@@ -1,78 +1,101 @@
 import React, { useEffect, useState } from 'react';
 import { API_URL } from '../../api';
-import { AiOutlinePlus } from 'react-icons/ai';
+// استيراد المكون الجديد
+import Follow from '../follow/Follow';
 
 const Rightbar = () => {
   const [users, setUsers] = useState([]);
+  const [myFollowing, setMyFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(3);
 
-  // جلب البيانات مع حماية ضد null/undefined
   const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      // حاجز حماية: لا تطلب البيانات إذا لم يكن هناك مستخدم أو توكن
+    const fetchData = async () => {
       if (!currentUser?.id || !token) {
         setLoading(false);
         return;
       }
-
       try {
-        const response = await fetch(`${API_URL}/api/users?filters[id][$ne]=${currentUser.id}&limit=5`, {
+        const meRes = await fetch(`${API_URL}/api/users/me?populate=following`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        const meData = await meRes.json();
+        setMyFollowing(meData.following || []);
 
-        if (response.ok) {
-          const data = await response.json();
-          // نتأكد أن البيانات مصفوفة قبل التحديث
-          setUsers(Array.isArray(data) ? data : []);
-        }
+        const usersRes = await fetch(`${API_URL}/api/users?filters[id][$ne]=${currentUser.id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const usersData = await usersRes.json();
+        setUsers(Array.isArray(usersData) ? usersData : []);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Rightbar Error:", error);
       } finally {
         setLoading(false);
       }
     };
+    fetchData();
+  }, [token, currentUser?.id]);
 
-    fetchUsers();
-  }, [token]); // نعتمد على التوكن للتحديث
+  const isFollowing = (userId) => {
+    return myFollowing.some(u => u.id === userId);
+  };
 
-  // إذا لم يكن هناك مستخدم، لا تظهر الـ Rightbar لتوفير مساحة وتجنب الأخطاء
+  const suggestions = users.filter(user => !isFollowing(user.id));
+
   if (!currentUser) return <div className="hidden lg:block w-80"></div>;
 
   return (
-    <div className="hidden lg:block w-80 h-screen sticky top-20 p-4 space-y-6">
-
-      {/* قسم اقتراحات المتابعة */}
+    <div className="hidden lg:block w-80 h-screen sticky top-20 p-4 space-y-6 overflow-y-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <h4 className="font-bold text-gray-800 mb-4 px-2">Who to follow</h4>
         <div className="space-y-4">
-          {!loading && users.map((user) => (
-            <div key={user.id} className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-xl transition-colors cursor-pointer">
+
+          {!loading && suggestions.slice(0, visibleCount).map((user) => (
+            <div key={user.id} className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-xl transition-colors cursor-pointer group">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-                  {/* حماية إضافية للـ username */}
+                <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm shrink-0">
                   {user?.username ? user.username[0].toUpperCase() : "?"}
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-800">{user?.username || "User"}</p>
+                <div className="truncate">
+                  <p className="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors truncate w-32">
+                    {user?.username || "User"}
+                  </p>
                   <p className="text-[10px] text-gray-500">Suggested for you</p>
                 </div>
               </div>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-full transition-all shadow-md">
-                <AiOutlinePlus size={16} />
-              </button>
+
+              {/* التعديل هنا: استبدلنا الـ button بمكون الـ Follow */}
+              <div className="shrink-0">
+                <Follow
+                  targetUserId={user.id}
+                  targetUserName={user.username}
+                  variant="icon"
+                />
+              </div>
+
             </div>
           ))}
-          {loading && <p className="text-center text-xs text-gray-400">Loading suggestions...</p>}
+
+          {loading && <p className="text-center text-xs text-gray-400 italic">Loading suggestions...</p>}
+          {!loading && suggestions.length === 0 && (
+            <p className="text-center text-xs text-gray-400 py-4">No new suggestions</p>
+          )}
         </div>
-        <button className="w-full text-blue-600 text-xs font-bold mt-4 hover:underline">
-          Show more
-        </button>
+
+        {!loading && suggestions.length > visibleCount && (
+          <button
+            onClick={() => setVisibleCount(prev => prev + 3)}
+            className="w-full text-blue-600 text-xs font-bold mt-4 hover:bg-blue-50 py-2 rounded-lg transition-colors border-t border-gray-50 pt-3"
+          >
+            Show more
+          </button>
+        )}
       </div>
 
-      {/* قسم الترند */}
+      {/* قسم الترند كما هو */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <h4 className="font-bold text-gray-800 mb-4 px-2">What's happening</h4>
         <div className="space-y-5">
