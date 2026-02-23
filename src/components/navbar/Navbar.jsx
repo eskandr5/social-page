@@ -38,8 +38,9 @@ const Navbar = () => {
                     {/* Icons - Middle (Hidden on Mobile) */}
                     <div className="hidden md:flex items-center gap-8 text-gray-600">
                         <Link title="Home" to="/feed" className="hover:text-blue-600 transition"><AiOutlineHome size={24} /></Link>
-                        <Link title="Messages" className="hover:text-blue-600 transition"><AiOutlineMessage size={24} /></Link>
                         <Link title="Notifications" to="/notifications" className="hover:text-blue-600 transition"><AiOutlineBell size={24} /></Link>
+                        <Link title="Messages" className="hover:text-blue-600 transition"><AiOutlineMessage size={24} /></Link>
+
                     </div>
 
                     {/* Right Side: Profile & Logout */}
