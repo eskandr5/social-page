@@ -4,7 +4,7 @@ import Rightbar from '../layout/Rightbar';
 import Post from '../posts/Post';
 import { API_URL } from '../../api';
 import ProfileSkeleton from '../common/skeleton/ProfileSkeleton';
-import FollowListModal from '../common/FollowListModal'; 
+import FollowListModal from '../common/FollowListModal';
 import { AiOutlineCalendar, AiOutlineCamera } from 'react-icons/ai';
 
 const Profile = () => {
@@ -12,8 +12,8 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [showFollowList, setShowFollowList] = useState(false);
-    const [listType, setListType] = useState(""); 
-    
+    const [listType, setListType] = useState("");
+
     const [userData, setUserData] = useState(() => {
         const saved = localStorage.getItem('user');
         return saved ? JSON.parse(saved) : null;
@@ -74,7 +74,7 @@ const Profile = () => {
                 body: formData
             });
             const uploadedFiles = await uploadRes.json();
-            
+
             await fetch(`${API_URL}/api/users/${userData.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -108,10 +108,8 @@ const Profile = () => {
         <div className="max-w-7xl mx-auto flex justify-center gap-6 px-4">
             <div className="hidden md:block w-64 mt-6"><Sidebar /></div>
 
-            <div className="w-full md:w-[600px] py-6">
-                {loading ? (
-                    <ProfileSkeleton />
-                ) : userData && (
+            <div className="w-full md:w-600px py-6">
+                {userData && (
                     <>
                         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-6">
                             <div className="h-32 bg-gradient-to-r from-blue-400 to-indigo-600"></div>
@@ -120,10 +118,10 @@ const Profile = () => {
                                     <div className="relative group">
                                         <div className="w-24 h-24 bg-blue-600 border-4 border-white rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg overflow-hidden">
                                             {userData.avatar ? (
-                                                <img 
-                                                    src={getAvatarUrl(userData.avatar)} 
-                                                    alt="avatar" 
-                                                    className="w-full h-full object-cover" 
+                                                <img
+                                                    src={getAvatarUrl(userData.avatar)}
+                                                    alt="avatar"
+                                                    className="w-full h-full object-cover"
                                                 />
                                             ) : (
                                                 <span>{userData.username?.[0].toUpperCase()}</span>
@@ -175,9 +173,13 @@ const Profile = () => {
                         </div>
 
                         <div className="space-y-4">
-                            {myPosts.map((post) => (
-                                <Post key={post.id} post={post} onUpdate={fetchProfileData} />
-                            ))}
+                            {loading ? (
+                                <ProfileSkeleton />
+                            ) : (
+                                myPosts.map((post) => (
+                                    <Post key={post.id} post={post} onUpdate={fetchProfileData} />
+                                ))
+                            )}
                         </div>
                     </>
                 )}
@@ -187,10 +189,10 @@ const Profile = () => {
 
             {/* استدعاء المودال بالبروبس الصحيحة */}
             {showFollowList && (
-                <FollowListModal 
-                    type={listType} 
-                    data={userData[listType] || []} 
-                    onClose={() => setShowFollowList(false)} 
+                <FollowListModal
+                    type={listType}
+                    data={userData[listType] || []}
+                    onClose={() => setShowFollowList(false)}
                 />
             )}
         </div>

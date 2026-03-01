@@ -5,7 +5,7 @@ import { AiOutlinePlus, AiOutlineCheck } from 'react-icons/ai'; // استيرا�
 const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -35,13 +35,13 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
     e.stopPropagation();
 
     if (loading) return;
-    
+
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
     const userId = storedUser?.id;
 
     if (!userId) {
-        alert("Please login again");
-        return;
+      alert("Please login again");
+      return;
     }
 
     setLoading(true);
@@ -88,14 +88,13 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
       <button
         onClick={toggleFollow}
         disabled={loading}
-        className={`p-1.5 rounded-full transition-all shadow-md shrink-0 active:scale-90 ${
-          isFollowing 
-          ? 'bg-gray-100 text-gray-400 shadow-none' 
+        className={`p-1.5 rounded-full transition-all shadow-md shrink-0 active:scale-90 ${isFollowing
+          ? 'bg-gray-100 text-gray-400 shadow-none'
           : 'bg-blue-600 hover:bg-blue-700 text-white'
-        }`}
+          }`}
       >
         {loading ? (
-           <span className="text-[10px]">...</span>
+          <span className="text-[10px]">...</span>
         ) : isFollowing ? (
           <AiOutlineCheck size={16} />
         ) : (
@@ -110,11 +109,10 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
     <button
       onClick={toggleFollow}
       disabled={loading}
-      className={`px-4 py-1 rounded-full text-sm font-bold transition-all ${
-        isFollowing 
-        ? 'bg-gray-200 text-gray-700 hover:bg-red-100 hover:text-red-600' 
+      className={`px-4 py-1 rounded-full text-sm font-bold transition-all ${isFollowing
+        ? 'bg-gray-200 text-gray-700 hover:bg-red-100 hover:text-red-600'
         : 'bg-blue-600 text-white hover:bg-blue-700'
-      }`}
+        }`}
     >
       {loading ? "..." : isFollowing ? "Unfollow" : "Follow"}
     </button>

@@ -56,7 +56,7 @@ const Rightbar = () => {
           {!loading && suggestions.slice(0, visibleCount).map((user) => (
             <div key={user.id} className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-xl transition-colors cursor-pointer group">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm shrink-0">
+                <div className="w-10 h-10 bg-linear-to-tr from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-sm shrink-0">
                   {user?.username ? user.username[0].toUpperCase() : "?"}
                 </div>
                 <div className="truncate">

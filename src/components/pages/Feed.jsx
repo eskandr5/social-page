@@ -4,7 +4,6 @@ import Share from '../posts/Share';
 import Rightbar from '../layout/Rightbar';
 import Sidebar from '../layout/Sidebar';
 import PostSkeleton from '../common/skeleton/PostSkeleton';
-import ShareSkeleton from '../common/skeleton/ShareSkeleton';
 import { API_URL } from '../../api';
 
 const Feed = () => {
@@ -41,7 +40,7 @@ const Feed = () => {
 
       {/* القسم الأوسط */}
       <div className="w-full md:w-2/3 lg:w-2/4 max-w-2xl py-6 space-y-6">
-        {loading ? <ShareSkeleton /> : <Share onPostCreated={fetchPosts} />}
+        <Share onPostCreated={fetchPosts} />
 
         <div className="space-y-6">
           {loading ? (
@@ -57,7 +56,7 @@ const Feed = () => {
                 onClick={fetchPosts}
                 className="mt-4 text-purple-600 hover:underline"
               >
-                حاول مرة أخرى
+                Try again
               </button>
             </div>
           ) : posts.length > 0 ? (
