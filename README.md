@@ -55,7 +55,7 @@ This application is built with a clear separation of concerns to ensure scalabil
 ### 🌐 Social Experience
 | Main Feed | User Profile | Mobile View |
 |:---:|:---:|:---:|
-| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Feed.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/profile.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/mobile.PNG?raw=true" width="160" /> |
+| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Feed.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Profile.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/mobile.PNG?raw=true" width="160" /> |
 
 ### 🛠️ Advanced Interactions
 | Followers Management | Delete Confirmation |
