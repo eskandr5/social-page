@@ -55,7 +55,7 @@ This application is built with a clear separation of concerns to ensure scalabil
 ### 🌐 Social Experience
 | Main Feed | Mobile Navigation |
 |:---:|:---:|
-| <img src="screenshots/feed.png" width="450" /> | <img src="screenshots/mobile.png" width="180" /> |
+| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Feed.PNG?raw=true" width="450" /> | <img src="screenshots/mobile.png" width="180" /> |
 
 ### 🛠️ Advanced Interactions
 | Followers Management | Delete Confirmation |
