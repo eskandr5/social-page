@@ -81,21 +81,23 @@ This application is built with a clear separation of concerns to ensure scalabil
    git clone [https://github.com/eskandr5/social-page.git](https://github.com/eskandr5/social-page.git)
    cd social-page
 
-Install dependencies:
-npm install
+2. **Install dependencies:**
+   ```bash
+   npm install
 
-Configure API:
-Update src/api.js with your endpoint:
-export const API_URL = "https://my-social-api-ytg6.onrender.com";
+3. **Configure API:**
+   Update src/api.js with your endpoint: 
+   ```bash
+   export const API_URL = "https://my-social-api-ytg6.onrender.com";
 
-Run Server:
-npm run dev
+4. **Run Server:**
+   ```bash
+   npm run dev
 
-🛡️ Technical Challenges Addressed
-State Synchronization: Managing complex interaction updates across nested components (Posts -> Comments -> Likes).
+## 🛡️ Technical Challenges Addressed
 
-Propagation Control: Handling nested clickable UI patterns to ensure a clean event flow using e.stopPropagation().
-
-Responsive Systematization: Building a layout that adapts intelligently without breaking during dynamic content loading.
+* **State Synchronization:** Managing complex interaction updates across nested components.
+* **Propagation Control:** Handling nested clickable UI patterns using `e.stopPropagation()`.
+* **Responsive Systematization:** Building a layout that adapts intelligently without breaking.
 
 Built by Mohammad Eskandr 🚀
