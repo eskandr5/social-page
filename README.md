@@ -50,17 +50,17 @@ This application is built with a clear separation of concerns to ensure scalabil
 ### 🖼️ Authentication & Onboarding
 | Sign Up | Login Page |
 |:---:|:---:|
-| <img src="screenshots/sign-up.png" width="380" /> | <img src="screenshots/login.png" width="380" /> |
+| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/sign-up.PNG?raw=true" width="380" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/login.PNG?raw=true" width="380" /> |
 
 ### 🌐 Social Experience
-| Main Feed | Mobile Navigation |
-|:---:|:---:|
-| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Feed.PNG?raw=true" width="450" /> | <img src="screenshots/mobile.png" width="180" /> |
+| Main Feed | User Profile | Mobile View |
+|:---:|:---:|:---:|
+| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/Feed.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/profile.PNG?raw=true" width="350" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/mobile.PNG?raw=true" width="160" /> |
 
 ### 🛠️ Advanced Interactions
 | Followers Management | Delete Confirmation |
 |:---:|:---:|
-| <img src="screenshots/followers-list.png" width="380" /> | <img src="screenshots/delete-modal.png" width="380" /> |
+| <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/followers-list.PNG?raw=true" width="380" /> | <img src="https://github.com/eskandr5/social-page/blob/main/screenshots/delete-modal.PNG?raw=true" width="380" /> |
 
 ---
 
