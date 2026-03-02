@@ -33,7 +33,7 @@ const Navbar = () => {
                         </button>
 
                         <Link to="/feed" className="text-xl md:text-2xl font-black text-blue-600 tracking-tighter">
-                            SOCIAL<span className="text-gray-800 font-bold">APP</span>
+                            SOCIAL<span className="text-gray-800 font-bold">SITE</span>
                         </Link>
                     </div>
 
