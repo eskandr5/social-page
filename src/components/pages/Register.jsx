@@ -10,17 +10,16 @@ import { FaUserPlus } from 'react-icons/fa';
 
 const Register = () => {
 
-    // 1. استخدام State بدلاً من getElementById
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState({ text: '', type: '' }); // لتخزين الرسالة ونوعها (خطأ أم نجاح)
+    const [message, setMessage] = useState({ text: '', type: '' }); 
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // للتوجيه لصفحة الدخول بعد النجاح
+    const navigate = useNavigate(); 
 
     const handleRegister = async (e) => {
-        e.preventDefault(); // منع الصفحة من إعادة التحميل
+        e.preventDefault(); 
         setLoading(true);
         setMessage({ text: '', type: '' });
         try {
@@ -33,7 +32,6 @@ const Register = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // 1. تخزين البيانات لكي يتعرف التطبيق أن المستخدم سجل دخوله بالفعل
                 localStorage.setItem('token', data.jwt);
                 localStorage.setItem('user', JSON.stringify(data.user));
 
@@ -42,10 +40,9 @@ const Register = () => {
                     type: "success"
                 });
 
-                // 2. التوجيه لصفحة الـ Feed مباشرة بعد ثانية واحدة
                 setTimeout(() => {
                     navigate('/feed');
-                    window.location.reload(); // لإعادة تحميل الحالة في التطبيق (Navbar وغيرها)
+                    window.location.reload(); 
                 }, 1500);
             } else {
 

@@ -1,30 +1,30 @@
-import { useState, useEffect } from 'react';
-import { API_URL } from '../../api';
-import { AiOutlinePlus, AiOutlineCheck } from 'react-icons/ai'; // استيراد الأيقونات
+import { useState, useEffect } from "react";
+import { API_URL } from "../../api";
+import { AiOutlinePlus, AiOutlineCheck } from "react-icons/ai"; // استيراد الأيقونات
 
 const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const checkFollowStatus = async () => {
       if (!token) return;
       try {
         const res = await fetch(`${API_URL}/api/users/me?populate=following`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) return;
         const data = await res.json();
-        const followingIds = data.following?.map(u => u.id) || [];
+        const followingIds = data.following?.map((u) => u.id) || [];
         setIsFollowing(followingIds.includes(targetUserId));
       } catch (error) {
         console.error("Error checking follow status:", error);
       }
     };
 
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     if (storedUser?.id && storedUser.id !== targetUserId) {
       checkFollowStatus();
     }
@@ -36,7 +36,7 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
 
     if (loading) return;
 
-    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     const userId = storedUser?.id;
 
     if (!userId) {
@@ -48,25 +48,27 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
 
     try {
       const res = await fetch(`${API_URL}/api/users/me?populate=following`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      let currentFollowingIds = data.following?.map(u => u.id) || [];
+      let currentFollowingIds = data.following?.map((u) => u.id) || [];
 
       let updatedFollowing;
       if (isFollowing) {
-        updatedFollowing = currentFollowingIds.filter(id => id !== targetUserId);
+        updatedFollowing = currentFollowingIds.filter(
+          (id) => id !== targetUserId,
+        );
       } else {
         updatedFollowing = [...currentFollowingIds, targetUserId];
       }
 
       const updateRes = await fetch(`${API_URL}/api/users/${userId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ following: updatedFollowing })
+        body: JSON.stringify({ following: updatedFollowing }),
       });
 
       if (updateRes.ok) {
@@ -79,7 +81,7 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
     }
   };
 
-  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
   if (!storedUser?.id || storedUser.id === targetUserId) return null;
 
   // --- النمط الأول: شكل الأيقونة للـ Rightbar ---
@@ -88,10 +90,11 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
       <button
         onClick={toggleFollow}
         disabled={loading}
-        className={`p-1.5 rounded-full transition-all shadow-md shrink-0 active:scale-90 ${isFollowing
-          ? 'bg-gray-100 text-gray-400 shadow-none'
-          : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
+        className={`p-1.5 rounded-full transition-all shadow-md shrink-0 active:scale-90 cursor-pointer disabled:cursor-not-allowed ${
+          isFollowing
+            ? "bg-gray-100 text-gray-400 shadow-none"
+            : "bg-blue-600 hover:bg-blue-700 text-white"
+        }`}
       >
         {loading ? (
           <span className="text-[10px]">...</span>
@@ -109,10 +112,11 @@ const Follow = ({ targetUserId, targetUserName, variant = "text" }) => {
     <button
       onClick={toggleFollow}
       disabled={loading}
-      className={`px-4 py-1 rounded-full text-sm font-bold transition-all ${isFollowing
-        ? 'bg-gray-200 text-gray-700 hover:bg-red-100 hover:text-red-600'
-        : 'bg-blue-600 text-white hover:bg-blue-700'
-        }`}
+      className={`px-4 py-1 rounded-full text-sm font-bold transition-all cursor-pointer disabled:cursor-not-allowed ${
+        isFollowing
+          ? "bg-gray-200 text-gray-700 hover:bg-red-100 hover:text-red-600"
+          : "bg-blue-600 text-white hover:bg-blue-700"
+      }`}
     >
       {loading ? "..." : isFollowing ? "Unfollow" : "Follow"}
     </button>

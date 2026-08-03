@@ -1,26 +1,35 @@
-import { useState, useEffect } from 'react';
-import { API_URL } from '../../api';
-import PostHeader from './PostHeader'; // مكون جديد
-import PostActions from './PostActions'; // مكون جديد
-import CommentSection from './CommentSection'; // مكون جديد
-import DeleteModal from '../common/DeleteModal'; // مكون عام
+import { useState, useEffect } from "react";
+import { API_URL } from "../../api";
+import PostHeader from "./PostHeader"; // مكون جديد
+import PostActions from "./PostActions"; // مكون جديد
+import CommentSection from "./CommentSection"; // مكون جديد
+import DeleteModal from "../common/DeleteModal"; // مكون عام
 
 const Post = ({ post, onUpdate }) => {
   const [showComments, setShowComments] = useState(false);
-  const [isLiking, setIsLiking] = useState(false); // حالة التحميل للايك  
+  const [isLiking, setIsLiking] = useState(false); // حالة التحميل للايك
   const [isLikedByMe, setIsLikedByMe] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
   // const imageUrl = post.image?.url || null;
 
   const imageUrl = post.image?.url
-    ? (post.image.url.startsWith('http') ? post.image.url : `${API_URL}${post.image.url}`)
+    ? post.image.url.startsWith("http")
+      ? post.image.url
+      : `${API_URL}${post.image.url}`
     : null;
   // هذه هي الدالة التي سنمررها للابن (PostActions)
-  const handleLikeUpdate = (loadingStatus, shouldRefresh = false) => {
+  const handleLikeUpdate = (
+    loadingStatus,
+    shouldRefresh = false,
+    optimisticToggle = false,
+  ) => {
     setIsLiking(loadingStatus);
+    if (optimisticToggle) {
+      setIsLikedByMe((prev) => !prev);
+    }
     if (shouldRefresh) {
       onUpdate(); // تحديث البيانات من السيرفر بعد انتهاء اللايك
     }
@@ -31,7 +40,7 @@ const Post = ({ post, onUpdate }) => {
     try {
       const response = await fetch(
         `${API_URL}/api/likes?filters[user][documentId][$eq]=${userId}&filters[post][documentId][$eq]=${post.documentId}`,
-        { headers: { 'Authorization': `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       const result = await response.json();
       setIsLikedByMe(result.data && result.data.length > 0);
@@ -46,10 +55,10 @@ const Post = ({ post, onUpdate }) => {
   const confirmDelete = async () => {
     try {
       const response = await fetch(`${API_URL}/api/posts/${post.documentId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
